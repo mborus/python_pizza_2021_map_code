@@ -1,0 +1,507 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Python Pizza 2021</title>
+
+    <link rel="stylesheet" href="../dist/reset.css">
+    <link rel="stylesheet" href="../dist/reveal.css">
+    <link rel="stylesheet" href="../dist/theme/white.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="../plugin/highlight/monokai.css">
+</head>
+<body>
+
+<style>
+    #content {
+        position: relative;
+    }
+
+    #content img {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        opacity: 0.15
+    }
+</style>
+
+<div id="content" >
+    <img src="screens/mborus.png" class="ribbon" height="75px" width="150px"/>
+</div>
+
+<div class="reveal">
+    <div class="slides">
+
+        
+
+
+        <section data-markdown
+         data-separator-notes="^Note:">
+
+Python Pizza Remote 2021
+
+## I Can Show You That On A Map
+
+![](screens/title.png )
+
+Martin Borus. @mborus on twitter and...
+
+Note:
+- Hi, I'm Martin
+- Python user since 2014
+- My day job: Writing Booking Systems for Ferry Operators using "Microsoft Dynamics Navision" and software
+around that in Python, for 20 years as a fulltime job, since 2016 as a freelancer.
+- Since my clients don't have experience in data science,
+- I try to raise awereness for Python as Excel replacement
+
+-> Spoiler Alert: I'm going fast, there's a github link at the end
+
+</section>
+
+
+        
+
+
+        <section data-markdown
+data-separator-notes="^Note:">
+
+## Task for the day:
+
+- Your boss gives you data. (which includes Zipcodes)
+- She wants you to help her understand that data.
+
+Note:
+
+Customer counts, Turnover, Passenger counts...
+
+Usually Q: "Find out where we make money"
+
+---
+
+## You: "I can show you that on a map!"
+
+---
+
+Alas you have no idea how to get started.
+
+
+Note:
+Added bonus problems:
+
+- No Budget
+- Windows
+- IT department's virus scanner prevents pip install access
+- Company data is secret and may not leave your work computer
+
+
+---
+
+## Agenda
+
+- [Learn the workflow]
+- Get the tools installed
+- Run the notebook
+
+Note:
+So you can actually do it.
+
+</section>
+
+
+
+
+
+        
+
+
+        <section data-markdown
+data-separator-notes="^Note:">
+
+## Step 1 - Geocoding
+
+- Have Zipcode
+- Want a **longitude** & a **latitude** value
+
+(for "projection" or GCS, we use WGS84 / EPSG 4326)
+
+
+Note:
+No need to learn more about Geographic Coordinate System or projections at this point.
+(or what the difference between these is)
+
+There are many online services for this,
+- most cost a fee
+- have rate limits
+- other restrictions
+
+---
+
+## Step 1 - Geocoding
+
+Use [pgeocode 0.3.0](https://pypi.org/project/pgeocode/), a pip installable library that works with data from [geonames.org](http://download.geonames.org/export/zip/)
+
+Query a list of zip codes from the same country, get a Pandas DataFrame with geo information.
+
+Note:
+
+This one is free and you can tweak it to work offline.
+pgeocode a single python file and easy to change.
+
+---
+
+## Step 1 - Geocoding
+
+Here's a pgeocode example:
+
+![](screens/pgeocode.png )
+
+Note:
+- Group/Query by country if your data has more than one country
+- Pgeocode creates a folder in your Home directory to store cache data.
+- For offline usage, you need to copy that folder.
+
+
+
+</section>
+
+
+        
+
+
+        <section data-markdown
+data-separator-notes="^Note:">
+
+## Step 2 - Grouping points
+
+![](screens/h3.png )
+
+[Uber](https://eng.uber.com/h3/)'s [H3](https://pypi.org/project/h3/) is Open Source and has Python bindings.
+
+Note:
+- "Grouping" or "Binning"
+- It's also is fast and has great API documentation
+- Lets you select resolution (how detailed the hexagons should be)
+---
+
+Example: get the H3 index for my home town with a resolution of 5
+
+![](screens/h3_1.png )
+
+
+Note:
+- Latitude "Breitengrad" first (54), longitude "Längengrad" after  (9)
+- It's a 16 byte string that's unique to H3
+- store in your DataFrame for grouping
+
+---
+
+Example: turn the H3 index into a hexagon.
+
+![](screens/h3_2.png )
+
+---
+
+Example: Validate that it worked.
+
+![](screens/h3_3.png )
+
+---
+
+## Workflow:
+
+- Add the **H3 index** as a new column to DataFrame.
+- Group data by the **H3 index** into a new DataFrame
+- Add a new column "geometry" to this new DataFrame
+- Fill this column with Polygon data via the **H3 index**
+
+
+Note:
+
+Now we have a Pandas DataFrame, with geo information inside.
+
+The name "geometry" is mandatory.
+
+</section>
+
+
+        
+
+
+        <section data-markdown
+data-separator-notes="^Note:">
+
+## Step 3 - Preparing the Map
+
+Convert Pandas DataFrame into a GeoDataFrame
+
+![](screens/geopandas_1.png )
+
+---
+
+Simplified, GeoDataFrame is like a normal Pandas DataFrame, but with a column 'geometry'.
+
+![](screens/geopandas_2.png )
+
+Note: and a projection
+---
+
+A GeoDataFrame has extra methods, like
+- *explore* to show an interactive map
+- *save* to save an interactive map to html
+
+Note:
+- If you mail out that html-file to an iOS user
+to see on an iPhone or iPad, they just get a blank screen.
+So you need to warn receipients that they need to look at
+it on a PC or send it to third party Apps like "Good Reader"
+which can display the interactive map.
+
+---
+
+## Agenda
+
+- Learn the workflow
+- [Get the tools installed]
+- Run the notebook
+
+Note:
+Now install
+
+</section>
+
+<!-- ![](screens/geodata_tweet.png ) -->
+
+
+        
+
+
+        <section data-markdown>
+
+## Installation for Windows 10
+
+- Download the 64bit recommended installer for Python 3.9.9
+- Run installer ("For all users" preferred)
+- No need to add Python to the Path.
+
+
+Note:
+Same operating system
+Same Python 3.9.9 !
+Not ready for Python 3.10 yet!
+Assume: No other Python is installed.
+
+---
+
+### Create a virtual environment
+
+![](screens/pip02.png )
+
+- Open a *cmd.exe* in your User directory
+- clone/download git repo & enter folder
+- *py -3.9 -m venv venv*
+
+---
+
+Activate it
+
+![](screens/pip03.png )
+
+and update pip
+
+note:
+always update pip
+
+---
+
+## Get Windows binaries:
+
+- GDAL‑3.3.3‑cp39‑cp39‑win_amd64.whl
+- Fiona-1.8.20-cp39-cp39-win_amd64.whl
+- numpy-1.21.4+mkl-cp39-cp39-win_amd64.whl
+
+Source: https://www.lfd.uci.edu/~gohlke/pythonlibs/
+
+Note:
+Binary Python Extension Packages
+Christoph Gohlke,
+Laboratory for Fluorescence Dynamics,
+University of California, Irvine.
+
+---
+
+Install them manually
+
+![](screens/pip04a.png )
+![](screens/pip04b.png )
+![](screens/pip04c.png )
+
+*pip install filename*
+
+Note:
+Successfull messages
+
+---
+
+Install the rest:
+
+*pip install -r requirements.txt*
+
+![](screens/pip05.png )
+
+
+Note:
+This will take a few minutes. Take a break!
+
+---
+
+Start JupyterLab to verify it works.
+
+*jupyter lab*
+
+![](screens/pip07.png )
+
+
+
+Note:
+
+- A browser opens.
+- you can now open "python_pizza_map_example.ipynb" and run it
+
+---
+
+## Congratulations!
+
+You now have a working JupyterLab environment capable of showing maps.
+
+---
+
+## Prepare offline install (1/4)
+
+- create folder *mkdir offline*
+- enter folder *cd offline*
+- *pip freeze > requirements_offline.txt*
+- *pip download -r requirements_offline.txt --no-deps*
+- *pip download pip*
+
+note:
+since you can't update pip
+---
+
+## Prepare offline install (2/4)
+
+- Copy 'offline' folder to USB.
+- Add a installer for the Python Version (3.9.9, 64bit)
+
+Note: This folder includes all manually downloaded files
+
+---
+
+## Prepare offline install (3/4)
+
+Finally edit the 'requirements_offline.txt'. For each local file, only keep the file name.
+
+![](screens/offline.png )
+
+Note:
+Example:
+- The Fiona line needs to start "Fiona-1.8.20...."
+- Watch for special characters! "%2B" "+ in numpy filename
+
+---
+## Prepare offline install (4/4)
+
+Reminder: The pgeocode library has kept a cache of zip code data in
+your in a folder called "pgeocode" in your Home directory.
+
+Move that folder to your USB stick as well and manually copy it.
+
+---
+
+## Installing offline:
+
+- Install Python
+- Create 'venv' & activate it (like before)
+- Move into the "offline" folder
+- *pip install -r requirements_offline.txt' --find-links . --no-index*
+- run *jupyter lab* to test installation
+
+Note:
+Copy to PC
+You now have an offline installation
+Pgeocode locale data folder!
+
+---
+
+## Agenda
+
+- Learn the workflow
+- Get the tools installed
+- [Run the notebook]
+
+---
+
+## Run the example
+
+Open the *python_pizza_map_example.ipynb* example notebook and run the notebook cells.
+
+Have fun exploring data on a map.
+
+</section>
+
+
+        
+
+
+        <section data-markdown
+         data-separator-notes="^Note:">
+
+## You can now show things on a map!
+
+Get the code/slides here:
+- github (https://github.com/mborus/python_pizza_2021)
+
+Find me on twitter @mborus or on Discord
+for the rest of the day.
+
+Note:
+
+Thanks for your attention.
+
+Hope this was useful and helps you is starting to work with maps.
+
+</select>
+
+
+        
+
+    </div>
+</div>
+
+<script src="../dist/reveal.js"></script>
+<script src="../plugin/notes/notes.js"></script>
+<script src="../plugin/markdown/markdown.js"></script>
+<script src="../plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+
+        controls: false,
+
+        slideNumber: true,
+
+        showSlideNumber: 'all',
+
+        transition: 'none',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+    });
+</script>
+</body>
+</html>

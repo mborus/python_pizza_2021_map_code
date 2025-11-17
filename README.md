@@ -10,6 +10,6 @@ Installing now is a lot easier. I updated the code to work with current h3 synta
 
 Requirements are now unfrozen, but there's a backup frozen file if you run into problems.
 
-The code now works without special installtion tricks on Python3.13 / Windows 10/11
+The code now works without special installation tricks on Python3.13 / Windows 10/11
 
 Note: The slides have not been updated - use the notebook!

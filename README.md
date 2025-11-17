@@ -8,7 +8,7 @@ Update 2025
 -----------
 Installing now is a lot easier. I updated the code to work with current h3 syntax.
 
-Requirements are now unfrozen, but there's a backup frozen file if you run into problem.
+Requirements are now unfrozen, but there's a backup frozen file if you run into problems.
 
 The code now works without special installtion tricks on Python3.13 / Windows 10/11
 
